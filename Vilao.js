@@ -5,7 +5,6 @@ class Vilao extends Inimigo {
         super(name, vida, questoes);
     }
 
-    // Pode ter habilidades especiais ou perguntas mais difíceis
 }
 
 module.exports = { Vilao };
