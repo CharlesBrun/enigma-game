@@ -11,9 +11,9 @@ const rl = readline.createInterface({
 });
 
 // Função para perguntar e esperar a resposta do jogador
-function askQuestion(question, opcoes) {
+function askQuestion(questao, opcoes) {
     return new Promise((resolve) => {
-        rl.question(`${question}\nOpcoes: ${opcoes.join(', ')}\n`, (answer) => {
+        rl.question(`${questao}\nOpcoes: ${opcoes.join(', ')}\n`, (answer) => {
             resolve(answer.toLowerCase()); // Padroniza a resposta para minúsculas
         });
     });
@@ -150,12 +150,18 @@ async function inimigosDesafio(personagem, nome_heroi){
     }
 }
 
+function pegaNomeHeroi() {
+    const nome_heroi = prompt("Bem-vindo ao jogo Herói do Enigma! Por favor, digite o nome do seu herói: "); 
+    if (nome_heroi.length === 0) return nome_heroi; // Verifica se o nome_heroi não está vazio
+    return nome_heroi.charAt(0).toUpperCase() + nome_heroi.slice(1).toLowerCase();
+}
+
 // Função para iniciar o jogo
 async function startGame() {
-    const nome_heroi = prompt("Bem-vindo ao jogo Herói do Enigma! Por favor, digite o nome do seu herói: ");
+    const nome_heroi = pegaNomeHeroi();
     const personagem = new Personagem(nome_heroi, 3);
 
-    console.log(`Olá ${nome_heroi}, neste momento você se encontra em uma missão muito importante para conquistar o mais alto titulo. \nEm sua jornada, você foi desafiado(a) a uma batalha de enigmas para conquistar o titulo maximo de Grande Mestre Enigma. Derrote os três inimigos primeiro para chegar até o grande vilão e conquiste sua vitória!`);
+    console.log(`Olá ${nome_heroi}, neste momento você se encontra em uma missão muito importante para conquistar o mais alto titulo. \nEm sua jornada, você foi desafiado(a) a uma batalha de enigmas para conquistar o titulo maximo de Grande Mestre Enigma. Derrote os três inimigos primeiro para chegar até o grande vilão e conquiste sua vitória!\n`);
     console.log('Atualmente existem os seguintes titulos:\nProfessor enigma.\nMago enigma.\nDoutor enigma.\nMestre enigma.\nGrande Mestre enigma.\n')
     console.log(`${nome_heroi}, você começa com 3 vidas. Para cada resposta incorreta, você perde 1 vida, e para cada inimigo que você conseguir derrotar, vai receber um acréscimo de mais 2 vidas.`);
     console.log("Boa sorte!\n");
