@@ -23,18 +23,58 @@ function pausaGame(){
     prompt("Pressione Enter para prosseguir!\n");
 }
 
-// Função para iniciar o jogo
-async function startGame() {
-    const nome_heroi = prompt("Bem-vindo ao jogo Herói do Enigma! Por favor, digite o nome do seu herói: ");
-    const personagem = new Personagem(nome_heroi, 3);
+async function desafioVilao(personagem, nome_heroi){
+    const vilao = new Vilao('Vilão Final', 5, [
+        { 
+            questao: "Questão 7 - Quais são os três números, nenhum dos quais é zero, que dão o mesmo resultado, quer sejam somados ou multiplicados?", 
+            opcoes: ["A - 1, 2 e 3.", "B - 4, 5 e 6.", "C - 7, 8 e 9"], 
+            respostaCorreta: "a" 
+        },
+        { 
+            questao: `Questão 8 - A é irmão de B
+            B é irmão de C
+            C é a mãe de D
+            Qual é o parentesco entre D e A?`, 
+            opcoes: ["A - A é o avo de D.", "B - A é o tio de D.", "C - A é o pai de D."], 
+            respostaCorreta: "b"
+        }
+    ]);
 
-    console.log(`Olá ${nome_heroi}, neste momento você se encontra em uma missão muito importante para derrotar o grande vilão que vem atormentando o grande evento de enigmas. \nEm sua jornada, você foi desafiado(a) a uma batalha de enigmas pela sua honra como grande Mestre dos Enigmas. Derrote os três inimigos primeiro para chegar até o grande vilão e conquiste sua vitória!`);
-    console.log(`${nome_heroi}, você começa com 3 vidas. Para cada resposta incorreta, você perde 1 vida, e para cada inimigo que você conseguir derrotar, vai receber um acréscimo de mais 2 vidas.`);
-    console.log("Boa sorte!\n");
+    if (personagem.isAlive()) {
+        console.log(`Parabéns ${nome_heroi}, você conquistou o direito de lutar contra o vilão final!`);
+        pausaGame();
+        console.log('Final Boss!');
+        console.log("Você se encontra face a face com o vilão final, uma figura temível que emana uma aura de poder e mistério. Ele sorri maliciosamente e diz: 'Finalmente, um verdadeiro desafiante. Vamos ver se você é digno do título de Grande Mestre Enigma.'");
+        // Similar ao laço acima, mas para o chefe final
+        let i = 0;
+        while (i < vilao.questoes.length) {
+            const questao = vilao.questoes[i];
+            const respostaUsuario = await askQuestion(questao.questao, questao.opcoes);
 
-    pausaGame();
-    
+            if (vilao.askQuestion(i, respostaUsuario)) {
+                console.log('Correto!\n');
+                if(i==0){
+                    console.log("Explicacão:\n1, 2 e 3, porque: \n1 + 2 + 3 = 6 e 1 x 2 x 3 = 6\n");
+                }
+                i++; // Avança para a próxima pergunta
+            } else {
+                console.log('Errado!');
+                personagem.loseLife();
+                console.log(`Você possui ${personagem.vida} vida(s)!\n`);
+            }
 
+            if (!personagem.isAlive()) {
+                console.log('Infelizmente você não conseguiu. Game Over!\n');
+                rl.close();
+                return;
+            }
+        }
+        console.log('Você derrotou o chefe! Parabéns!');
+        console.log('Com uma última e brilhante resposta, o vilão final cai de joelhos, derrotado. A multidão explode em aplausos, e você é proclamado o Grande Mestre Enigma. Parabéns, sua jornada épica chegou ao fim com um triunfo glorioso!');
+    }
+}
+
+async function inimigosDesafio(personagem, nome_heroi){
     const inimigos = [
         new Inimigo('Inimigo 1', 3, [
             { 
@@ -74,22 +114,6 @@ async function startGame() {
         ])
     ];
 
-    const vilao = new Vilao('Vilão Final', 5, [
-        { 
-            questao: "Questão 7 - Quais são os três números, nenhum dos quais é zero, que dão o mesmo resultado, quer sejam somados ou multiplicados?", 
-            opcoes: ["A - 1, 2 e 3.", "B - 4, 5 e 6.", "C - 7, 8 e 9"], 
-            respostaCorreta: "a" 
-        },
-        { 
-            questao: `Questão 8 - A é irmão de B
-            B é irmão de C
-            C é a mãe de D
-            Qual é o parentesco entre D e A?`, 
-            opcoes: ["A - A é o avo de D.", "B - A é o tio de D.", "C - A é o pai de D."], 
-            respostaCorreta: "b"
-        }
-    ]);
-
     let inimigoAtualIndex = 0;
 
     // Laço principal do jogo
@@ -124,37 +148,54 @@ async function startGame() {
         console.log(`Você possui ${personagem.vida} vida(s)!\n`);
         inimigoAtualIndex++;
     }
+}
 
-    if (personagem.isAlive()) {
-        console.log(`Parabéns ${nome_heroi}, você conquistou o direito de lutar contra o vilão final!`);
-        pausaGame();
-        console.log('Vilão final!!!\n');
-        // Similar ao laço acima, mas para o chefe final
-        let i = 0;
-        while (i < vilao.questoes.length) {
-            const questao = vilao.questoes[i];
-            const respostaUsuario = await askQuestion(questao.questao, questao.opcoes);
+// Função para iniciar o jogo
+async function startGame() {
+    const nome_heroi = prompt("Bem-vindo ao jogo Herói do Enigma! Por favor, digite o nome do seu herói: ");
+    const personagem = new Personagem(nome_heroi, 3);
 
-            if (vilao.askQuestion(i, respostaUsuario)) {
-                console.log('Correto!\n');
-                if(i==0){
-                    console.log("Explicacão:\n1, 2 e 3, porque: \n1 + 2 + 3 = 6 e 1 x 2 x 3 = 6\n");
-                }
-                i++; // Avança para a próxima pergunta
-            } else {
-                console.log('Errado!');
-                personagem.loseLife();
-                console.log(`Você possui ${personagem.vida} vida(s)!\n`);
+    console.log(`Olá ${nome_heroi}, neste momento você se encontra em uma missão muito importante para conquistar o mais alto titulo. \nEm sua jornada, você foi desafiado(a) a uma batalha de enigmas para conquistar o titulo maximo de Grande Mestre Enigma. Derrote os três inimigos primeiro para chegar até o grande vilão e conquiste sua vitória!`);
+    console.log('Atualmente existem os seguintes titulos:\nProfessor enigma.\nMago enigma.\nDoutor enigma.\nMestre enigma.\nGrande Mestre enigma.\n')
+    console.log(`${nome_heroi}, você começa com 3 vidas. Para cada resposta incorreta, você perde 1 vida, e para cada inimigo que você conseguir derrotar, vai receber um acréscimo de mais 2 vidas.`);
+    console.log("Boa sorte!\n");
+
+    pausaGame();
+    await inimigosDesafio(personagem, nome_heroi);
+
+    //Estrutura de decisão para permitir uma forma de escolher entre um titulo menor.
+    if(personagem.vida >= 9){
+        console.log("Você chegou até aqui com nove vidas, você está indo muito bem!");
+        console.log("Após a batalha intensa, você é recebido com aplausos por uma multidão e, surpreendentemente, o presidente do evento, um homem sábio e misterioso, se aproxima de você.");
+        console.log("Ele diz: 'Sua performance tem sido exemplar, guerreiro. Por isso, estou aqui para lhe oferecer um título raro e valioso, o título de Mestre Enigma. Aceitar esse título significa reconhecer sua incrível habilidade e sagacidade. Mas, se preferir, você pode continuar sua jornada e enfrentar o vilão final para conquistar o título de Grande Mestre Enigma, uma honra ainda maior.\n'");
+        console.log("Você deve escolher sabiamente. Caso aceite o título de Mestre Enigma, digite 'aceito'. Caso decida continuar e enfrentar o vilão final, digite 'não aceito'.");
+
+
+        let lacoContrato = true;
+        let aceiteContrato;
+        do {
+            aceiteContrato = prompt("Qual a sua escolha? ").toLowerCase();
+            if(aceiteContrato == 'aceito' || aceiteContrato == 'nao aceito'){
+                lacoContrato = false;
+            }else{
+                console.log("Valor incorreto inserido, digite novamente 'aceito' ou 'nao aceito'...");
             }
+        } while (lacoContrato);
 
-            if (!personagem.isAlive()) {
-                console.log('Infelizmente você não conseguiu. Game Over!\n');
-                rl.close();
-                return;
-            }
+        if(aceiteContrato == "nao aceito"){
+            console.log('Com uma determinação feroz, você decide continuar sua jornada e se prepara para enfrentar o vilão final!');
+            await desafioVilao(personagem, nome_heroi);
+        }else{
+            console.log('Parabéns! Você recebeu o título de Mestre Enigma e é saudado como um dos maiores enigmatistas da história!\n');
+            console.log("\nFim de jogo e obrigado por jogar...")
+            rl.close();
+            return;
         }
-        console.log(`Você derrotou o vilão e conquistou o título de grande Mestre dos Enigmas! Parabéns ${nome_heroi}!`);
+    }else{
+        await desafioVilao(personagem, nome_heroi);
+        console.log("\nFim de jogo e obrigado por jogar...")
     }
+
 
     rl.close();
 }
