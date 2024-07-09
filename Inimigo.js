@@ -7,13 +7,8 @@ class Inimigo extends Personagem {
     }
 
     // Método para perguntar e verificar resposta
-    askQuestion(index, resposta) {
-        if (this.questoes[index].respostaCorreta === resposta) {
-            return true;
-        } else {
-            this.loseLife();
-            return false;
-        }
+    realizarPergunta(index, resposta) {
+        return this.questoes[index].respostaCorreta === resposta;
     }
 }
 

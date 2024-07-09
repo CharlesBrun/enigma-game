@@ -11,7 +11,7 @@ const rl = readline.createInterface({
 });
 
 // Função para perguntar e esperar a resposta do jogador
-function askQuestion(questao, opcoes) {
+function realizarPergunta(questao, opcoes) {
     return new Promise((resolve) => {
         rl.question(`${questao}\nOpcoes: ${opcoes.join(', ')}\n`, (answer) => {
             resolve(answer.toLowerCase()); // Padroniza a resposta para minúsculas
@@ -49,9 +49,9 @@ async function desafioVilao(personagem, nome_heroi){
         let i = 0;
         while (i < vilao.questoes.length) {
             const questao = vilao.questoes[i];
-            const respostaUsuario = await askQuestion(questao.questao, questao.opcoes);
+            const respostaUsuario = await realizarPergunta(questao.questao, questao.opcoes);
 
-            if (vilao.askQuestion(i, respostaUsuario)) {
+            if (vilao.realizarPergunta(i, respostaUsuario)) {
                 console.log('Correto!\n');
                 if(i==0){
                     console.log("Explicacão:\n1, 2 e 3, porque: \n1 + 2 + 3 = 6 e 1 x 2 x 3 = 6\n");
@@ -124,9 +124,9 @@ async function inimigosDesafio(personagem, nome_heroi){
         let i = 0;
         while (i < inimigo.questoes.length) {
             const questao = inimigo.questoes[i];
-            const respostaUsuario = await askQuestion(questao.questao, questao.opcoes);
+            const respostaUsuario = await realizarPergunta(questao.questao, questao.opcoes);
 
-            if (inimigo.askQuestion(i, respostaUsuario)) {
+            if (inimigo.realizarPergunta(i, respostaUsuario)) {
                 console.log('Correto!\n');
                 i++; // Avança para a próxima pergunta
             } else {
@@ -170,7 +170,7 @@ async function startGame() {
     await inimigosDesafio(personagem, nome_heroi);
 
     //Estrutura de decisão para permitir uma forma de escolher entre um titulo menor.
-    if(personagem.vida >= 9){
+    if(personagem.vida > 6){
         console.log("Você chegou até aqui com nove vidas, você está indo muito bem!");
         console.log("Após a batalha intensa, você é recebido com aplausos por uma multidão e, surpreendentemente, o presidente do evento, um homem sábio e misterioso, se aproxima de você.");
         console.log("Ele diz: 'Sua performance tem sido exemplar, guerreiro. Por isso, estou aqui para lhe oferecer um título raro e valioso, o título de Mestre Enigma. Aceitar esse título significa reconhecer sua incrível habilidade e sagacidade. Mas, se preferir, você pode continuar sua jornada e enfrentar o vilão final para conquistar o título de Grande Mestre Enigma, uma honra ainda maior.\n'");
